@@ -1,0 +1,63 @@
+<div class="container mt-5">
+            <div class="card text-center shadow mb-5 bg-white rounded">
+                <div class="card-header font-italic">
+                    <h4> <%= @building.title %> </h4>
+                    <% if @building.user %>
+                    by <%= @building.user.first_name %>
+                    <% end %>
+                </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><h6> Liner Meter : <span class="badge text-bg-primary"><%= @building.liner_meter %></span> </h6></li>
+                    <li class="list-group-item"><h6> sq Meter : <span class="badge text-bg-primary"><%= @building.sq_meter %></span> </h6></li>
+                    <li class="list-group-item"><h6> Total of Waste Height : <span class="badge text-bg-danger"><%= @building.total_wastage_height %></span></h6></li>
+                    <li class="list-group-item"><h6> Total of Waste Width : <span class="badge text-bg-danger"><%= @building.total_wastage_width %></span></h6> </li>
+                    <li class="list-group-item"><h6> Total of Useful Waste Height : <span class="badge text-bg-success"><%= @building.total_useful_wastage_height %></span></h6> </li>
+                    <li class="list-group-item"><h6> Total of Useful Waste Width : <span class="badge text-bg-success"><%= @building.total_useful_wastage_width %></span></h6> </li>
+                </ul>
+            </div>
+                <div class="card-footer text-muted ">
+                                <% for window in @windows do %>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="col-6">
+                                            <div class="card mb-5" style="resize: none">
+                                                <div class="card-header">
+                                                    <h1> <%%> </h1>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="container">
+                                                        <ul class="list-group list-group-flush">
+                                                            <li class="list-group-item"><h6> Width : <span class="badge text-bg-primary"><%= window["window_width"] %></span> </h6></li>
+                                                            <li class="list-group-item"><h6> Height : <span class="badge text-bg-primary"><%= window["window_height"] %></span> </h6></li>
+                                                            <li class="list-group-item"><h6> Waste Width : <span class="badge text-bg-danger"><%= window["window_watage_width"] %></span></h6></li>
+                                                            <li class="list-group-item"><h6> Waste Height : <span class="badge text-bg-danger"><%= window["window_wastage_height"] %></span></h6> </li>
+                                                            <li class="list-group-item"><h6> Instllation Pice : <span class="badge text-bg-success"><%= window["window_instllation_pice"] %></span></h6> </li>
+                                                            <li class="list-group-item"><h6> Roll Width : <span class="badge text-bg-warning"><%= window["window_roll_width"] %></span></h6> </li>
+
+                                                            <li class="list-group-item"><h6> Roll Height : <span class="badge text-bg-warning"><%= window["window_roll_height"] %></span> </h6></li>
+                                                            <li class="list-group-item"><h6> Useful Height : <span class="badge text-bg-success"><%= window["window_useful_height"] %></span></h6></li>
+                                                            <li class="list-group-item"><h6> Useful Width : <span class="badge text-bg-success"><%= window["window_useful_width"] %></span></h6> </li>
+                                                            <li class="list-group-item"><h6> Wastage Pice : <span class="badge text-bg-danger"><%= window["window_wastage_pice"] %></span></h6> </li>                                                            
+                                                        </ul>
+                                                        <div class="d-flex justify-content-center">
+                                                        <div class="card text-bg-primary mb-3" style="max-width: 18rem;">
+                                                            <div class="card-header">Message</div>
+                                                            <div class="card-body">
+                                                                <p class="card-text"><%= window["window_message"]%></p>
+                                                            </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>  
+                                        </div>
+                                    </div>          
+                     <% end %>
+                        
+               
+        </div>
+    </div>
+</div>
+
+
+   

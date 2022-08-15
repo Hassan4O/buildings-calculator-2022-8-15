@@ -1,0 +1,27 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  window_width: 1
+  window_height: 1
+  window_watage_width: 1
+  window_wastage_height: 1
+  window_instllation_pice: 1
+  window_roll_width: 1
+  window_roll_height: 1
+  window_message: MyString
+  window_useful_height: 1
+  window_useful_width: 1
+  window_wastage_pice: 1
+
+two:
+  window_width: 1
+  window_height: 1
+  window_watage_width: 1
+  window_wastage_height: 1
+  window_instllation_pice: 1
+  window_roll_width: 1
+  window_roll_height: 1
+  window_message: MyString
+  window_useful_height: 1
+  window_useful_width: 1
+  window_wastage_pice: 1

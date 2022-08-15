@@ -1,0 +1,31 @@
+<div class="container">
+    <% @buildings.each do |building| %>
+        <div class="row justify-content-md-center">
+        <div class="col-8 mt-4">
+            <div class="card text-center shadow mb-5 bg-white rounded">
+            <div class="card-header font-italic">
+                <h4> <%= building.title %> </h4>
+                <% if building.user %>
+                by <%= building.user.first_name %>
+                <% end %>
+            </div>
+            <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><h6> Liner Meter : <span class="badge text-bg-primary"><%= building.liner_meter %></span> </h6></li>
+                        <li class="list-group-item"><h6> sq Meter : <span class="badge text-bg-primary"><%= building.sq_meter %></span> </h6></li>
+                        <li class="list-group-item"><h6> Total of Waste Height : <span class="badge text-bg-danger"><%= building.total_wastage_height %></span></h6></li>
+                        <li class="list-group-item"><h6> Total of Waste Width : <span class="badge text-bg-danger"><%= building.total_wastage_width %></span></h6> </li>
+                        <li class="list-group-item"><h6> Total of Useful Waste Height : <span class="badge text-bg-success"><%= building.total_useful_wastage_height %></span></h6> </li>
+                        <li class="list-group-item"><h6> Total of Useful Waste Width : <span class="badge text-bg-success"><%= building.total_useful_wastage_width %></span></h6> </li>
+                    </ul>
+                    <%= link_to "View", building_path(building), class: "btn btn-outline-success" %>
+
+            </div>
+            <div class="card-footer text-muted">
+                <small>Created <%= time_ago_in_words(building.created_at) %> ago, 
+            </div>
+            </div>
+        </div>
+        </div>
+    <% end %>
+</div>
