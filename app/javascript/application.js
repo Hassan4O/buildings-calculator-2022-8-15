@@ -1,5 +1,4 @@
 // Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
-//= require bootstrap 
 import "@hotwired/turbo-rails"  
 import "./controllers"  
-import "bootstrap"  
+import "bootstrap"  import * as bootstrap from "bootstrap"
