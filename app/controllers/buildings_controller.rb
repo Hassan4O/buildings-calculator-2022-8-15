@@ -64,7 +64,7 @@ class BuildingsController < ApplicationController
             window_height = build[index_window].to_i 
         
             window = {
-                "id" => a,
+                "id" => a+1,
                 "window_width" => window_width.to_i,
                 "window_height" => window_height.to_i,
                 "window_watage_width" => 0,
@@ -221,27 +221,20 @@ class BuildingsController < ApplicationController
                  
             for bigWindow in reverseWindowArray
                 if smallWindow["id"] != bigWindow["id"]
-                    puts "THE BIG : #{bigWindow["id"]}"
-                    puts "THE SMALL : #{smallWindow["id"]}"
-                    
+                    puts "the small : #{smallWindow["id"]} the big : #{bigWindow["id"]} " 
                     windowPeiceTakeWastage = bigWindow["window_wastage_pice"]
                         #  if the width <= wastage Width , and hight <= wastage Height and the samll not
                         #  give any one any thing
-                        puts "THE CON #{smallWindow["window_width"] <= bigWindow["window_watage_width"] && smallWindow["window_height"] <= bigWindow["window_wastage_height"]}"
-                        puts "THE W #{smallWindow["window_width"]}"
-                        puts "THE H #{smallWindow["window_height"] }"
-                        puts "THE WSW #{ bigWindow["window_watage_width"] }"
-                        puts "THE WSH #{bigWindow["window_wastage_height"]}"
                     if smallWindow["window_width"] <= bigWindow["window_watage_width"] && smallWindow["window_height"] <= bigWindow["window_wastage_height"]
                         if bigWindow["window_watage_width"] >= smallWindow["window_width"]
                             if bigWindow["window_instllation_pice"] > 1
-                                 wastageSuptractFromWindowWidth = (bigWindow["window_watage_width"]* bigWindow["window_wastage_pice"]) - smallWindow["window_width"]
-                                 wastageSuptractFromHeight = (bigWindow["window_wastage_height"]* bigWindow["window_wastage_pice"])- smallWindow["window_height"]
+                                wastageSuptractFromWindowWidth = (bigWindow["window_watage_width"]* bigWindow["window_wastage_pice"]) - smallWindow["window_width"]
+                                wastageSuptractFromHeight = (bigWindow["window_wastage_height"]* bigWindow["window_wastage_pice"])- smallWindow["window_height"]
                             else						    
                                 wastageSuptractFromWindowWidth = (bigWindow["window_watage_width"]* bigWindow["window_wastage_pice"])- smallWindow["window_width"]
                                  
                                 if wastageSuptractFromWindowWidth <= 0
-                                     wastageSuptractFromHeight = (bigWindow["window_wastage_height"]*  bigWindow["window_wastage_pice"])-  smallWindow["window_height"]
+                                    wastageSuptractFromHeight = (bigWindow["window_wastage_height"]*  bigWindow["window_wastage_pice"])-  smallWindow["window_height"]
                                          
                                 else
                                     wastageSuptractFromHeight = smallWindow["window_height"]
