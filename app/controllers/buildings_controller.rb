@@ -92,9 +92,8 @@ class BuildingsController < ApplicationController
             totalUsefulWasteWidth = totalUsefulWasteWidth + window["window_useful_width"]
             totalWasteWidth = totalWasteWidth + window["window_watage_width"]
             totalWasteHeight = totalWasteHeight + window["window_wastage_height"]
-            puts "THE LINER METER : #{linerMeter}"
 
-            linerMeter = linerMeter + (window["window_roll_height"] * window["window_instllation_pice"]) / 100
+            linerMeter = linerMeter + (window["window_roll_height"] * window["window_instllation_pice"])
 
             windowWidthForCost = window["window_height"] * window["window_width"]
             multiWidthInHeight = multiWidthInHeight + windowWidthForCost
@@ -102,16 +101,27 @@ class BuildingsController < ApplicationController
 
         end
         # CM to M
+
+        totalusefulWasteHeight = totalusefulWasteHeight.to_f
         totalusefulWasteHeight = totalusefulWasteHeight / 100;
+
+        totalUsefulWasteWidth = totalUsefulWasteWidth.to_f
         totalUsefulWasteWidth = totalUsefulWasteWidth / 100;
+
+        totalWasteWidth = totalWasteWidth.to_f
         totalWasteWidth = totalWasteWidth / 100;
+
+        totalWasteHeight = totalWasteHeight.to_f
         totalWasteHeight = totalWasteHeight / 100;
-        
+
+        linerMeter = linerMeter.to_f
+        linerMeter = linerMeter /100
+        multiWidthInHeight = multiWidthInHeight.to_f
         sqMeter = multiWidthInHeight / 10000
 
         
         
-        new_building = Building.create(total_useful_wastage_height: totalusefulWasteHeight.to_f, total_useful_wastage_width: totalUsefulWasteWidth.to_f, total_wastage_height: totalWasteHeight.to_f, total_wastage_width: totalWasteWidth.to_f, liner_meter: linerMeter.to_f, sq_meter: sqMeter.to_f, user_id: current_user.id,title: @title)
+        new_building = Building.create(total_useful_wastage_height: totalusefulWasteHeight, total_useful_wastage_width: totalUsefulWasteWidth, total_wastage_height: totalWasteHeight, total_wastage_width: totalWasteWidth, liner_meter: linerMeter, sq_meter: sqMeter, user_id: current_user.id,title: @title)
         new_building.save
 
         for window in arr_result
@@ -139,7 +149,9 @@ class BuildingsController < ApplicationController
             "window_message" => windowInfo["window_message"],
             "window_useful_height" => windowInfo["window_useful_height"],
             "window_useful_width" => windowInfo["window_useful_width"],
-            "window_wastage_pice" => windowInfo["window_wastage_pice"]}
+            "window_wastage_pice" => windowInfo["window_wastage_pice"],
+            "Donaition" => true
+            }
             totalOfPis = 0
             sumOfHfiftyTo = 0
             sumOperation = 0
@@ -147,13 +159,15 @@ class BuildingsController < ApplicationController
             divTotalWidthSumOfHfiftyTO = 0
             totalOfWastage = 0
 
-            if (windowInformation["window_width"] < 152 && windowInformation["window_height"] < 152) || (windowInformation["window_width"] < 152 && windowInformation["window_height"] > 152) 
+            if windowInformation["window_width"] < 152 && windowInformation["window_height"] < 152 || windowInformation["window_width"] < 152 && windowInformation["window_height"] > 152
                 windowInformation["window_watage_width"] = 152 - windowInformation["window_width"]
                 windowInformation["window_wastage_height"] = windowInformation["window_height"]
                 windowInformation["window_message"] ="The window will be installed in one piece and it Have waste : #{(152 - windowInformation["window_width"])}"
                 windowInformation["window_instllation_pice"] = 1
                 windowInformation["window_roll_width"] =  152
                 windowInformation["window_roll_height"] = windowInfo["window_height"]
+                windowInformation["window_wastage_pice"] = 1
+                
             elsif windowInfo["window_width"] > 152 && windowInfo["window_height"] < 152 
                 windowInformation["window_watage_width"] = 152 - windowInformation["window_height"]
                 windowInformation["window_wastage_height"] = windowInformation["window_width"]
@@ -161,7 +175,9 @@ class BuildingsController < ApplicationController
                 windowInformation["window_instllation_pice"] = 1
                 windowInformation["window_wastage_pice"] = 1
                 
+                
             elsif windowInfo["window_width"] > 152 && windowInfo["window_height"] > 152
+                
                 j = 0 
                 while sumOfHfiftyTo <= windowInfo["window_width"]
                     sumOfHfiftyTo = sumOfHfiftyTo + 152
@@ -190,6 +206,7 @@ class BuildingsController < ApplicationController
                 windowInformation["window_wastage_pice"] = 1
                 
                 
+                
             else
                 windowInformation["window_watage_width"] = 0
                 windowInformation["window_wastage_height"] = 0
@@ -211,7 +228,6 @@ class BuildingsController < ApplicationController
 
     def start(windowArray,reverseWindowArray)
         for smallWindow in windowArray 
-            puts "THE WASTAGE: #{smallWindow["window_watage_width"]}"
             wastageSuptractFromWindowWidth = 0
             wastageSuptractFromHeight = 0
             newState = " "
@@ -221,122 +237,105 @@ class BuildingsController < ApplicationController
                  
             for bigWindow in reverseWindowArray
                 if smallWindow["id"] != bigWindow["id"]
-                    puts "the small : #{smallWindow["id"]} the big : #{bigWindow["id"]} " 
                     windowPeiceTakeWastage = bigWindow["window_wastage_pice"]
                         #  if the width <= wastage Width , and hight <= wastage Height and the samll not
                         #  give any one any thing
-                    if smallWindow["window_width"] <= bigWindow["window_watage_width"] && smallWindow["window_height"] <= bigWindow["window_wastage_height"]
-                        if bigWindow["window_watage_width"] >= smallWindow["window_width"]
-                            if bigWindow["window_instllation_pice"] > 1
-                                wastageSuptractFromWindowWidth = (bigWindow["window_watage_width"]* bigWindow["window_wastage_pice"]) - smallWindow["window_width"]
-                                wastageSuptractFromHeight = (bigWindow["window_wastage_height"]* bigWindow["window_wastage_pice"])- smallWindow["window_height"]
-                            else						    
-                                wastageSuptractFromWindowWidth = (bigWindow["window_watage_width"]* bigWindow["window_wastage_pice"])- smallWindow["window_width"]
-                                 
-                                if wastageSuptractFromWindowWidth <= 0
-                                    wastageSuptractFromHeight = (bigWindow["window_wastage_height"]*  bigWindow["window_wastage_pice"])-  smallWindow["window_height"]
-                                         
-                                else
-                                    wastageSuptractFromHeight = smallWindow["window_height"]
-                                end
-                            end
-                                     
-                                     
-                                 
- 
-                             
- 
-                            newState = "The window will be installed from the waste of window No. : #{bigWindow["id"]}"
-                            smallWindow["window_watage_width"] = 0
-                            smallWindow["window_wastage_height"] = 0
-                            smallWindow["window_message"] = newState 
-                            smallWindow["window_roll_width"] = 0
-                            smallWindow["window_roll_height"] = 0 
-                            smallWindow["window_instllation_pice"] = 1
-                            smallWindow["window_useful_width"] = smallWindow["window_width"]
-                            smallWindow["window_useful_height"] =  smallWindow["window_height"]
-                            stateFatherWindow = "And the Children is : #{smallWindow["id"]}"
-                            bigWindow["window_message"] =  " #{bigWindow["window_message"]} - #{stateFatherWindow} "
-                            bigWindow["window_watage_width"]= wastageSuptractFromWindowWidth 
-                            bigWindow["window_wastage_height"] = wastageSuptractFromHeight 
-                            if windowPeiceTakeWastage > 1
-                                wastagePieceUpdate = windowPeiceTakeWastage - 1
+                    if smallWindow["window_width"] <= bigWindow["window_watage_width"] && smallWindow["window_height"] <= bigWindow["window_wastage_height"] && smallWindow["window_roll_width"] != 0 && smallWindow["Donaition"] == true
+                        if bigWindow["window_wastage_pice"] > 1
+                            wastageSuptractFromWindowWidth = ( bigWindow["window_watage_width"]* bigWindow["window_wastage_pice"] ) - smallWindow["window_width"]
+                            wastageSuptractFromHeight = (bigWindow["window_wastage_height"]* bigWindow["window_wastage_pice"]) - smallWindow["window_height"]
+                        else
+                            wastageSuptractFromWindowWidth = (bigWindow["window_watage_width"]* bigWindow["window_wastage_pice"])- smallWindow["window_width"]
+                                
+                            if wastageSuptractFromWindowWidth <= 0
+                                wastageSuptractFromHeight = (bigWindow["window_wastage_height"]*  bigWindow["window_wastage_pice"])-  smallWindow["window_height"]
+                                        
                             else
-                                wastagePieceUpdate = windowPeiceTakeWastage
+                                wastageSuptractFromHeight = smallWindow["window_height"]
                             end
-                
-                        
-                        bigWindow["window_wastage_pice"] = wastagePieceUpdate
-                        end 
- 
-                         
- 
-                    elsif smallWindow["window_width"]  <= bigWindow["window_wastage_height"] && smallWindow["window_height"] <=  bigWindow["window_watage_width"]
-                        if bigWindow["window_wastage_height"]  >= smallWindow["window_width"]
-                            if bigWindow["window_instllation_pice"]  > 1
-                                wastageSuptractFromwindow_width = (bigWindow["window_wastage_height"] * bigWindow["window_wastage_pice"])- smallWindow["window_width"] 
-                                wastageSuptractFromHeight = (bigWindow["window_watage_width"] * bigWindow["window_wastage_pice"])- smallWindow["window_height"]
-                             
-                            else
-                                wastageSuptractFromwindow_width = (bigWindow["window_wastage_height"]*  bigWindow["window_wastage_pice"])-  smallWindow["window_width"]
-                                                                     
-                                if wastageSuptractFromWindowWidth <= 0 
-                                    wastageSuptractFromHeight = (bigWindow["window_watage_width"] * bigWindow["window_wastage_pice"])- smallWindow["window_height"]
-                                             
-                                else
-                                    wastageSuptractFromHeight = smallWindow["window_height"]
-                                end
-                            end
-                                     
-                                     
-                                 
-                                 
-                                 
-                                 
-                                 
- 
-                             
- 
-                            newState = "-- The window will be installed from the waste of window No. : #{smallWindow["id"]}  and will be installation in reverse --"
-                            smallWindow["window_watage_width"] = 0
-                            smallWindow["window_wastage_height"] = 0
-                            smallWindow["window_message"] = newState 
-                            smallWindow["window_roll_width"] = 0
-                            smallWindow["window_roll_height"] = 0 
-                            smallWindow["window_instllation_pice"] = 1
-                            smallWindow["window_useful_width"] = smallWindow["window_width"]
-                            smallWindow["window_useful_height"] =  smallWindow["window_height"]
-                            stateFatherWindow = " And the Children is : #{smallWindow["id"]}"
-                            bigWindow["window_message"] =  " #{bigWindow["window_message"]} - #{stateFatherWindow} " 
-                            bigWindow["window_watage_width"]= wastageSuptractFromWindowWidth 
-                            bigWindow["window_wastage_height"] = wastageSuptractFromHeight 
-                            if (windowPeiceTakeWastage > 1)
-                                wastagePieceUpdate = windowPeiceTakeWastage - 1
-                            else
-                                wastagePieceUpdate = windowPeiceTakeWastage
-                            end
-                            bigWindow["window_wastage_pice"] = wastagePieceUpdate 
-
                         end
+                                    
+                                    
+                                
+
+                            
+
+                        newState = "The window will be installed from the waste of window No. : #{bigWindow["id"]}"
+                        smallWindow["window_watage_width"] = 0
+                        smallWindow["window_wastage_height"] = 0
+                        smallWindow["window_message"] = newState 
+                        smallWindow["window_roll_width"] = 0
+                        smallWindow["window_roll_height"] = 0 
+                        smallWindow["window_instllation_pice"] = 1
+                        smallWindow["window_useful_width"] = smallWindow["window_width"]
+                        smallWindow["window_useful_height"] =  smallWindow["window_height"]
+                        stateFatherWindow = "And the Children is : #{smallWindow["id"]}"
+                        bigWindow["window_message"] =  " #{bigWindow["window_message"]} - #{stateFatherWindow} "
+                        bigWindow["window_watage_width"]= wastageSuptractFromWindowWidth 
+                        bigWindow["window_wastage_height"] = wastageSuptractFromHeight 
+                        bigWindow["Donaition"] = false
+                        
+                        if windowPeiceTakeWastage > 1
+                            wastagePieceUpdate = windowPeiceTakeWastage - 1
+                        else
+                            wastagePieceUpdate = windowPeiceTakeWastage
+                        end
+                        bigWindow["window_wastage_pice"] = wastagePieceUpdate
+ 
                          
  
-                    else
-                        rollWidth = 152 * smallWindow["window_instllation_pice"]
-                        smallWindow["window_roll_width"] = rollWidth
-                        smallWindow["window_roll_height"] = smallWindow["window_height"]
-                        smallWindow["window_useful_width"] = 0
-                        smallWindow["window_useful_height"] =  0
+                    elsif smallWindow["window_width"]  <= bigWindow["window_wastage_height"] && smallWindow["window_height"] <=  bigWindow["window_watage_width"] && smallWindow["window_roll_width"] != 0 && smallWindow["Donaition"] == true
+                        if bigWindow["window_wastage_pice"]  > 1
+                            wastageSuptractFromwindow_width = (bigWindow["window_wastage_height"] * bigWindow["window_wastage_pice"])- smallWindow["window_width"] 
+                            wastageSuptractFromHeight = (bigWindow["window_watage_width"] * bigWindow["window_wastage_pice"])- smallWindow["window_height"]
+                            
+                        else
+                            wastageSuptractFromwindow_width = (bigWindow["window_wastage_height"]*  bigWindow["window_wastage_pice"])-  smallWindow["window_width"]
+                                                                    
+                            if wastageSuptractFromWindowWidth <= 0 
+                                wastageSuptractFromHeight = (bigWindow["window_watage_width"] * bigWindow["window_wastage_pice"])- smallWindow["window_height"]
+                                            
+                            else
+                                wastageSuptractFromHeight = smallWindow["window_height"]
+                            end
+                        end
+                                    
+                                    
+                                
+                                
+                                
+                                
+                                
+
+                            
+
+                        newState = "-- The window will be installed from the waste of window No. : #{smallWindow["id"]}  and will be installation in reverse --"
+                        smallWindow["window_watage_width"] = 0
+                        smallWindow["window_wastage_height"] = 0
+                        smallWindow["window_message"] = newState 
+                        smallWindow["window_roll_width"] = 0
+                        smallWindow["window_roll_height"] = 0 
+                        smallWindow["window_instllation_pice"] = 1
+                        smallWindow["window_useful_width"] = smallWindow["window_width"]
+                        smallWindow["window_useful_height"] =  smallWindow["window_height"]
+                        stateFatherWindow = " And the Children is : #{smallWindow["id"]}"
+                        bigWindow["window_message"] =  " #{bigWindow["window_message"]} - #{stateFatherWindow} " 
+                        bigWindow["window_watage_width"]= wastageSuptractFromWindowWidth 
+                        bigWindow["window_wastage_height"] = wastageSuptractFromHeight
+                        bigWindow["Donaition"] = false 
+                        if (windowPeiceTakeWastage > 1)
+                            wastagePieceUpdate = windowPeiceTakeWastage - 1
+                        else
+                            wastagePieceUpdate = windowPeiceTakeWastage
+                        end
+                        bigWindow["window_wastage_pice"] = wastagePieceUpdate 
+
+                    
+                         
+
                     end
                              
  
- 
-                         
- 
-                else
-                    smallWindow["window_roll_width"] = (152 * smallWindow["window_instllation_pice"])
-                    smallWindow["window_roll_height"] = smallWindow["window_height"]
-                    smallWindow["window_useful_width"] = 0
-                    smallWindow["window_useful_height"] =  0
                 end
          
             end
